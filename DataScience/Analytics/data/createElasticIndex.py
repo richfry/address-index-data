@@ -53,7 +53,6 @@ def create_index(data, index_name='addressbase', type_name='hybrid'):
 
     print('Populating data...')
     res = es.bulk(index=index_name, body=bulk_data, refresh=True)
-    # print(res)
 
 
 def test(index_name='addressbase'):
@@ -63,7 +62,19 @@ def test(index_name='addressbase'):
     print('Response:', res)
 
 
+def test2(index_name='addressbase'):
+    print('Testing index...')
+    es = Elasticsearch(hosts=[{'host': 'localhost', 'port': 9200}])
+    res = es.search(index=index_name, body={'query': {'bool': {'should': [{'match': {'POSTCODE': 'CF48 2NQ'}},
+                                                                          {'match': {'BUILDING_NAME': 'PENLAN'}}],
+                                                               "minimum_should_match": 1,
+                                                               'boost': 1.0}}})
+    for hit in res['hits']['hits']:
+        print(hit)
+
+
 if __name__ == '__main__':
     data = load_data()
     create_index(data)
     test()
+    test2()
