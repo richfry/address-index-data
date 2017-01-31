@@ -68,12 +68,12 @@ def load_data(filename='AB_processed.csv', path='/Users/saminiemi/Projects/ONS/A
                  'SAO_START_SUFFIX': str, 'ORGANISATION': str, 'STREET_DESCRIPTOR': str,
                  'TOWN_NAME': str, 'LOCALITY': str}
     else:
-        dtype = {'UPRN': np.int64, 'ORGANISATION_NAME': str,
+        dtype = {'UPRN': np.int64, 'ORGANISATION_NAME': str, 'PAO_END_SUFFIX': str,
                  'DEPARTMENT_NAME': str, 'SUB_BUILDING_NAME': str, 'BUILDING_NAME': str,
                  'BUILDING_NUMBER': str, 'THROUGHFARE': str,
                  'POST_TOWN': str, 'POSTCODE': str, 'PAO_TEXT': str,
                  'PAO_START_NUMBER': np.float64, 'PAO_START_SUFFIX': str,
-                 'SAO_TEXT': str, 'SAO_START_NUMBER': np.float64,
+                 'SAO_TEXT': str, 'SAO_START_NUMBER': np.float64, 'SAO_START_SUFFIX': str,
                  'STREET_DESCRIPTOR': str, 'TOWN_NAME': str, 'LOCALITY': str,
                  'postcode_in': str, 'postcode_out': str}
 
