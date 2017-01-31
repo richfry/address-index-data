@@ -7,6 +7,15 @@ The script does not define mappings or any specific configuration. Can therefore
 used for testing only.
 
 
+Running
+-------
+
+After all requirements are satisfied and the required files are available,
+the script can be invoked using CPython interpreter::
+
+    python createElasticIndex.py
+
+
 Requirements
 ------------
 
