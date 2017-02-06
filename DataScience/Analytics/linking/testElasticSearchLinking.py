@@ -39,7 +39,7 @@ from elasticsearch import Elasticsearch
 from Analytics.linking import addressLinking
 
 
-def test_elastic_search_linking(index_name='addressbasetest'):
+def test_elastic_search_linking(index_name='addressbase'):
     """
     A simple function to run through the test dataset.
 
@@ -82,7 +82,7 @@ def test_elastic_search_linking(index_name='addressbasetest'):
             shoulds.append({'match': {'PAO_START_NUMBER': row['BuildingName']}})
 
         if row['BuildingNumber'] is not None:
-            shoulds.append({'match': {'BUILDING_NUMBER': row['BuildingNumber']}})
+            shoulds.append({'match': {'BUILDING_NUMBER': int(row['BuildingNumber'])}})
 
         if row['StreetName'] is not None:
             shoulds.append({'match': {'THROUGHFARE': row['StreetName']}})
@@ -102,7 +102,7 @@ def test_elastic_search_linking(index_name='addressbasetest'):
             shoulds.append({'match': {'PAO_START_SUFFIX': row['BuildingSuffix']}})
 
         if row['BuildingStartNumber'] is not None:
-            shoulds.append({'match': {'PAO_START_NUMBER': row['BuildingStartNumber']}})
+            shoulds.append({'match': {'PAO_START_NUMBER': int(row['BuildingStartNumber'])}})
 
         if row['PAOText'] is not None and row['PAOText'] != '':
             shoulds.append({'match': {'PAO_TEXT': row['PAOText']}})
@@ -111,7 +111,9 @@ def test_elastic_search_linking(index_name='addressbasetest'):
             shoulds.append({'match': {'SAO_TEXT': row['SAOText']}})
 
         if row['FlatNumber'] != -12345:
-            shoulds.append({'match': {'SAO_START_NUMBER': row['FlatNumber']}})
+            shoulds.append({'match': {'SAO_START_NUMBER': int(row['FlatNumber'])}})
+
+        shoulds.append({'match': {'_all': row['ADDRESS']}})
 
         query_body = {'query': {'bool': {'should': shoulds, "minimum_should_match": '55%', 'boost': 1.0}},
                       'sort': {'_score': 'desc'}}

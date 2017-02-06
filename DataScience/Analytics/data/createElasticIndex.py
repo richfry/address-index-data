@@ -61,7 +61,7 @@ def load_data(filename='AB_processed.csv', path='/Users/saminiemi/Projects/ONS/A
         filename = 'ABtest.csv'
         dtype = {'UPRN': np.int64, 'POSTCODE_LOCATOR': str, 'ORGANISATION_NAME': str,
                  'DEPARTMENT_NAME': str, 'SUB_BUILDING_NAME': str, 'BUILDING_NAME': str,
-                 'BUILDING_NUMBER': str, 'THROUGHFARE': str, 'DEPENDENT_LOCALITY': str,
+                 'BUILDING_NUMBER': np.float64, 'THROUGHFARE': str, 'DEPENDENT_LOCALITY': str,
                  'POST_TOWN': str, 'POSTCODE': str, 'PAO_TEXT': str,
                  'PAO_START_NUMBER': np.float64, 'PAO_START_SUFFIX': str, 'PAO_END_NUMBER': np.float64,
                  'PAO_END_SUFFIX': str, 'SAO_TEXT': str, 'SAO_START_NUMBER': np.float64,
@@ -120,13 +120,28 @@ def create_and_populate_index(data, index_name='addressbase', type_name='hybrid'
         data_dict = {}
         for i in range(len(row)):
             data_dict[data.columns[i]] = row[i]
-        op_dict = {
-            "index": {
-                "_index": index_name,
-                "_type": type_name,
-                "_id": data_dict['UPRN']
-            }
-        }
+        op_dict = {"index": {"_index": index_name, "_type": type_name, "_id": data_dict['UPRN']},
+                   "mappings": {'index': {"properties": {"UPRN": {"type": "long"},
+                                                         "POSTCODE_LOCATOR": {"type": "text", "analyzer": "not_analyzed"},
+                                                         "ORGANISATION_NAME": {"type": "text"},
+                                                         "DEPARTMENT_NAME": {"type": "text"},
+                                                         "SUB_BUILDING_NAME": {"type": "text"},
+                                                         "BUILDING_NAME": {"type": "text"},
+                                                         "BUILDING_NUMBER": {"type": "long"},
+                                                         "THROUGHFARE": {"type": "text"},
+                                                         "DEPENDENT_LOCALITY": {"type": "text"},
+                                                         "POST_TOWN": {"type": "text"},
+                                                         "POSTCODE": {"type": "text", "analyzer": "not_analyzed"},
+                                                         "PAO_TEXT": {"type": "text"},
+                                                         "PAO_START_NUMBER": {"type": "long"},
+                                                         "PAO_START_SUFFIX": {"type": "text", "analyzer": "not_analyzed"},
+                                                         "PAO_END_NUMBER": {"type": "long"},
+                                                         "PAO_END_SUFFIX": {"type": "text", "analyzer": "not_analyzed"},
+                                                         "ORGANISATION": {"type": "text"},
+                                                         "STREET_DESCRIPTOR": {"type": "text"},
+                                                         "SAO_START_SUFFIX": {"type": "text", "analyzer": "not_analyzed"},
+                                                         "TOWN_NAME": {"type": "text"},
+                                                         "LOCALITY": {"type": "text"}}}}}
         bulk_data.append(op_dict)
         bulk_data.append(data_dict)
 
@@ -170,7 +185,7 @@ def test2(index_name='addressbase'):
 
 
 if __name__ == '__main__':
-    data = load_data()
+    data = load_data(test=True)
     create_and_populate_index(data)
     test()
     test2()
