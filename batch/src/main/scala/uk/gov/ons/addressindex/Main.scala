@@ -16,8 +16,6 @@ import scalaj.http.{Http, HttpResponse}
  */
 object Main extends App {
 
-  val config = ConfigFactory.load()
-
   val opts = new ScallopConf(args) {
     banner(
       """
@@ -27,11 +25,24 @@ Example: java -jar ons-ai-batch.jar --mapping --hybrid
 
 For usage see below:
       """)
-
+    val customConfig = opt[Boolean]("customConfig", noshort = true, descr = "Specify a custom .conf file")
+    val confName = opt[String]("config", noshort = true, descr = "The Config file to use")
     val hybrid = opt[Boolean]("hybrid", noshort = true, descr = "Index hybrid PAF & NAG")
     val mapping = opt[Boolean]("mapping", noshort = true, descr = "Creates mapping for the index")
     val help = opt[Boolean]("help", noshort = true, descr = "Show this message")
     verify()
+  }
+
+  // For some reason, if opts.* is referenced within a pattern match or if statement, an
+  // illegalAccess exception is raised, hence the two variables below
+  val useCustomConfig = opts.customConfig()
+  val confName = opts.confName.getOrElse("reference")
+
+  // If the --customConfig flag is provided, the contents of the config argument is used to load in a
+  // specific configuration file
+  val config = useCustomConfig match {
+    case true => ConfigFactory.load(confName)
+    case false => ConfigFactory.load()
   }
 
   // each run of this application has a unique index name
