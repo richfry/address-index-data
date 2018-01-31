@@ -43,6 +43,22 @@ addressindex.elasticsearch.pass="password"
 
 These will override the default configuration pointing to the localhost.
 
+### Loading Data into local ElasticSearch
+
+Firstly, run ElasticSearch, version 5.6.
+
+```shell
+docker run -p 9200:9200 -p 9300:9300 elasticsearch:5.6
+```
+
+Run `address-index-data` to trigger the loading of data into ElasticSearch (this will take a few minutes).
+
+```shell
+sbt "run --customConfig --config=application --hybrid --mapping"
+```
+
+Test it worked by going to the following URL (http://localhost:9200/_cat/indices?v). 52475 should be shown in the `docs.count` column.
+
 ### Dependencies
 
 Top level project dependencies may be found in the build.sbt file.
