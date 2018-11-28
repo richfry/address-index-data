@@ -67,7 +67,7 @@ For usage see below:
         saveHybridAddresses(true, true)
       }
 
-      postLoad(indexName)
+      postLoad(indexName, opts.skinny())
     } else {
       postMapping(indexName)
       preLoad(indexName)
@@ -78,7 +78,7 @@ For usage see below:
         saveHybridAddresses()
       }
 
-      postLoad(indexName)
+      postLoad(indexName, opts.skinny())
     }
   } else opts.printHelp()
 
@@ -125,9 +125,11 @@ For usage see below:
     if (refreshResponse.code != 200) throw new Exception(s"Could not set refresh interval using PUT: code ${refreshResponse.code} body ${refreshResponse.body}")
   }
 
-  private def postLoad(indexName: String) = {
+  private def postLoad(indexName: String, skinny: Boolean = false) = {
+    val replicas = if (skinny) 3 else 1
+
     val replicaResponse: HttpResponse[String] = Http(url + "/_settings")
-      .put("""{"index":{"number_of_replicas":1}}""")
+      .put(s"""{"index":{"number_of_replicas":$replicas}}""")
       .asString
     if (replicaResponse.code != 200) throw new Exception(s"Could not set number of replicas using PUT: code ${replicaResponse.code} body ${replicaResponse.body}")
     val refreshResponse: HttpResponse[String] = Http(url + "/_settings")
