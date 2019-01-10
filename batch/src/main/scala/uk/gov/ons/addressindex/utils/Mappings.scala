@@ -265,8 +265,8 @@ object Mappings {
            },
            "edge_ngram": {
              "type": "edgeNGram",
-             "min_gram": "1",
-             "max_gram": "25",
+             "min_gram": "2",
+             "max_gram": "22",
              "token_chars": ["letter", "digit"]
            }
          },
