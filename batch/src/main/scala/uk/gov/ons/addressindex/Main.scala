@@ -35,6 +35,8 @@ For usage see below:
 
   val nodes = config.getString("addressindex.elasticsearch.nodes")
   val port = config.getString("addressindex.elasticsearch.port")
+  val user = config.getString("addressindex.elasticsearch.user")
+  val password = config.getString("addressindex.elasticsearch.pass")
 
   // each run of this application has a unique index name
   val indexName =
@@ -115,6 +117,7 @@ For usage see below:
         } else {
           Mappings.hybrid
         })
+      .auth(user, password)
       .header("Content-type", "application/json")
       .asString
     if (response.code != 200) throw new Exception(s"Could not create mapping using PUT: code ${response.code} body ${response.body}")
@@ -123,6 +126,7 @@ For usage see below:
   private def preLoad(indexName: String) = {
     val refreshResponse: HttpResponse[String] = Http(url + "/_settings")
       .put("""{"index":{"refresh_interval":"-1"}}""")
+      .auth(user, password)
       .asString
     if (refreshResponse.code != 200) throw new Exception(s"Could not set refresh interval using PUT: code ${refreshResponse.code} body ${refreshResponse.body}")
   }
@@ -130,10 +134,12 @@ For usage see below:
   private def postLoad(indexName: String) = {
     val replicaResponse: HttpResponse[String] = Http(url + "/_settings")
       .put("""{"index":{"number_of_replicas":1}}""")
+      .auth(user, password)
       .asString
     if (replicaResponse.code != 200) throw new Exception(s"Could not set number of replicas using PUT: code ${replicaResponse.code} body ${replicaResponse.body}")
     val refreshResponse: HttpResponse[String] = Http(url + "/_settings")
       .put("""{"index":{"refresh_interval":"1s"}}""")
+      .auth(user, password)
       .asString
     if (refreshResponse.code != 200) throw new Exception(s"Could not set refresh interval using PUT: code ${refreshResponse.code} body ${refreshResponse.body}")
   }
